@@ -181,7 +181,7 @@ export default function Game() {
       setIsGameOver(true);
 
       // Save to global history
-      fetch(JSON_BLOB_URL)
+      fetch(JSON_BLOB_URL, { cache: 'no-store' })
         .then(res => res.json())
         .then(data => {
           if (!Array.isArray(data)) data = [];

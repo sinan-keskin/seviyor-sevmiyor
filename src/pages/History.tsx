@@ -15,7 +15,7 @@ export default function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(JSON_BLOB_URL)
+    fetch(JSON_BLOB_URL, { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
