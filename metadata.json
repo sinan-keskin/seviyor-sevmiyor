@@ -1,0 +1,6 @@
+{
+  "name": "Seviyor Sevmiyor",
+  "description": "Pembe ve mor tonlarında, akıcı animasyonlar barındıran, glassmorphism temalı interaktif papatya yaprağı koparma oyunu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
