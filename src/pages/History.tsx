@@ -46,7 +46,7 @@ export default function History() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600 rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-glow-2" />
       </div>
 
-      <main className="relative z-10 w-full max-w-md mx-auto flex flex-col py-6 sm:py-8">
+      <main className="relative z-10 w-full max-w-2xl mx-auto flex flex-col py-6 sm:py-8">
         
         <div className="flex items-center justify-between mb-8">
           <Link to="/" className="flex items-center gap-2 text-pink-300 hover:text-pink-100 transition-colors bg-white/5 p-2 rounded-xl backdrop-blur-sm border border-white/10">
@@ -76,25 +76,45 @@ export default function History() {
               <p>Henüz kimse papatya koparmadı...</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-3">
-              {records.map((record, idx) => (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  key={idx}
-                  className="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-4 backdrop-blur-sm"
-                >
-                  <div className="flex flex-col">
-                    <span className={`text-lg font-serif italic font-bold tracking-wide ${record.result === 'SEVIYOR' ? 'text-pink-300' : 'text-purple-400'}`}>
-                      {record.result === 'SEVIYOR' ? 'Seviyor ❤️' : 'Sevmiyor 💔'}
-                    </span>
-                    <span className="text-xs text-slate-400 mt-1 opacity-70">
-                      {new Date(record.date).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
+            <div className="w-full overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
+              <table className="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                  <tr className="border-b border-white/10 bg-black/20">
+                    <th className="p-4 text-pink-300 font-semibold text-sm tracking-wider w-16 text-center">No</th>
+                    <th className="p-4 text-pink-300 font-semibold text-sm tracking-wider">Tarih & Saat</th>
+                    <th className="p-4 text-pink-300 font-semibold text-sm tracking-wider">Sonuç</th>
+                    <th className="p-4 text-pink-300 font-semibold text-sm tracking-wider">Testi Yapan</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {records.map((record, idx) => {
+                    const recordNo = records.length - idx;
+                    const dateObj = new Date(record.date);
+                    const formattedDate = dateObj.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + dateObj.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+
+                    return (
+                      <motion.tr
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        key={idx}
+                        className="hover:bg-white/5 transition-colors group"
+                      >
+                        <td className="p-4 text-white/60 text-center font-mono text-sm">{recordNo}</td>
+                        <td className="p-4 text-white/80 tracking-wide">{formattedDate}</td>
+                        <td className="p-4 font-serif italic font-bold">
+                          <span className={`px-3 py-1 rounded-full text-sm ${record.result === 'SEVIYOR' ? 'bg-pink-500/10 text-pink-300 border border-pink-500/20' : 'bg-purple-500/10 text-purple-400 border border-purple-500/20'}`}>
+                            {record.result === 'SEVIYOR' ? 'Seviyor ❤️' : 'Sevmiyor 💔'}
+                          </span>
+                        </td>
+                        <td className="p-4 text-pink-100/90 font-medium tracking-wide">
+                          Hilal <span className="inline-block animate-pulse text-yellow-300">✨</span>
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </div>
