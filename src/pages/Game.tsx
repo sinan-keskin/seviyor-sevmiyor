@@ -5,7 +5,8 @@ import { Heart, RotateCcw, Volume2, VolumeX, Sparkles, HelpCircle, History } fro
 import { Petal, PluckResult, GameHistoryEntry, Sparkle } from '../types';
 import { DaisyFlower } from '../components/DaisyFlower';
 import { playPluckSound, playSuccessChime } from '../utils/audio';
-import { JSON_BLOB_URL } from './History';
+import { ref, push } from 'firebase/database';
+import { db } from '../lib/firebase';
 
 // Odd numbers are ideal to guarantee the game starts with 'Seviyor', alternates perfectly, and ends on 'Seviyor'.
 const ODD_PETAL_OPTIONS = [9, 11, 13, 15];
@@ -180,19 +181,16 @@ export default function Game() {
     if (nextStep === totalPetals) {
       setIsGameOver(true);
 
-      // Save to global history
-      fetch(JSON_BLOB_URL, { cache: 'no-store' })
-        .then(res => res.json())
-        .then(data => {
-          if (!Array.isArray(data)) data = [];
-          data.push({ date: new Date().toISOString(), result: 'SEVIYOR' });
-          fetch(JSON_BLOB_URL, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          }).catch(err => console.error("History update error", err));
-        })
-        .catch(err => console.error("History fetch error", err));
+      // Save to global history in Firebase
+      try {
+        const historyRef = ref(db, 'history');
+        push(historyRef, {
+          date: new Date().toISOString(),
+          result: 'SEVIYOR'
+        });
+      } catch (err) {
+        console.error("Firebase update error", err);
+      }
 
       // Play celestial harp sweep!
       if (soundEnabled) {

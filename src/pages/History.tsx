@@ -3,8 +3,8 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Clock } from 'lucide-react';
 
-export const JSON_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019e9ec6-5fe1-7105-b1be-95ad6db3676f';
-
+import { ref, onValue, off } from 'firebase/database';
+import { db } from '../lib/firebase';
 export interface HistoryRecord {
   date: string;
   result: 'SEVIYOR' | 'SEVMIYOR';
@@ -15,19 +15,27 @@ export default function History() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(JSON_BLOB_URL, { cache: 'no-store' })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          // Sort newest first
-          setRecords(data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to fetch history', err);
-        setLoading(false);
-      });
+    const historyRef = ref(db, 'history');
+    
+    onValue(historyRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // data is an object of { key: record } from Firebase
+        const dataArray: HistoryRecord[] = Object.values(data);
+        // Sort newest first
+        setRecords(dataArray.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      } else {
+        setRecords([]);
+      }
+      setLoading(false);
+    }, (err) => {
+      console.error('Failed to fetch history', err);
+      setLoading(false);
+    });
+
+    return () => {
+      off(historyRef);
+    };
   }, []);
 
   return (
