@@ -260,14 +260,6 @@ export default function Game() {
             <div className="absolute top-1/2 right-8 w-1.5 h-1.5 bg-purple-300 rounded-full opacity-30"></div>
           </div>
           
-          <div className="absolute top-6 right-6 z-20">
-            <Link to="/history" className="text-pink-300 hover:text-pink-100 transition-colors flex flex-col items-center gap-1 group">
-              <div className="bg-white/5 p-2 rounded-full border border-white/10 group-hover:bg-white/10 backdrop-blur-sm transition-all shadow-sm shadow-pink-500/20">
-                <History size={18} />
-              </div>
-            </Link>
-          </div>
-
           {/* Step description tracker */}
           <div className="text-center w-full z-10 mb-2 mt-4">
             <h1 className="text-white text-3xl font-light tracking-widest uppercase mb-2">
